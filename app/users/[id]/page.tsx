@@ -15,12 +15,7 @@ export default async function UserDetailPage({ params }: UserDetailPageProps) {
     notFound();
   }
 
-  let user;
-  try {
-    user = await getUserById(numericId);
-  } catch {
-    notFound();
-  }
+  const user = await getUserById(numericId).catch(() => notFound());
 
   return (
     <Layout>
