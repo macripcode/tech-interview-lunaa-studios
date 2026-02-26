@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { type User } from "@/types/user";
+import { useState, useMemo, useCallback } from "react";
+import { type User, type CreateUserInput } from "@/types/user";
 import UserListToolbar from "@/components/UserListToolbar";
 import UserCard from "@/components/UserCard";
 import CreateUserModal from "@/components/CreateUserModal";
@@ -31,14 +31,16 @@ export default function UserDashboard({ initialUsers }: UserDashboardProps) {
   const totalUsers = users.length;
   const matchedCount = filteredUsers.length;
 
-  const handleUserCreated = (input: {
-    name: string;
-    email: string;
-    company: string;
-  }) => {
-    setUsers((prev) => [...prev, buildLocalUser(input)]);
-    showToast("Usuario creado exitosamente", "success");
-  };
+  const handleUserCreated = useCallback(
+    (input: CreateUserInput) => {
+      setUsers((prev) => [...prev, buildLocalUser(input)]);
+      showToast("Usuario creado exitosamente", "success");
+    },
+    [showToast]
+  );
+
+  const handleOpenModal = useCallback(() => setIsModalOpen(true), []);
+  const handleCloseModal = useCallback(() => setIsModalOpen(false), []);
 
   return (
     <div>
@@ -47,7 +49,7 @@ export default function UserDashboard({ initialUsers }: UserDashboardProps) {
         totalUsers={totalUsers}
         matchedCount={matchedCount}
         onSearchChange={setSearch}
-        onNewUser={() => setIsModalOpen(true)}
+        onNewUser={handleOpenModal}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -66,7 +68,7 @@ export default function UserDashboard({ initialUsers }: UserDashboardProps) {
 
       <CreateUserModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         onUserCreated={handleUserCreated}
       />
     </div>
