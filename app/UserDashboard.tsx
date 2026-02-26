@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { type User } from "@/types/user";
 import SearchBar from "@/components/SearchBar";
 import UserCard from "@/components/UserCard";
@@ -17,11 +17,15 @@ export default function UserDashboard({ initialUsers }: UserDashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { showToast } = useToast();
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.includes(search) ||
-      user.email.includes(search) ||
-      user.company.name.includes(search)
+  const filteredUsers = useMemo(
+    () =>
+      users.filter(
+        (user) =>
+          user.name.includes(search) ||
+          user.email.includes(search) ||
+          user.company.name.includes(search)
+      ),
+    [users, search]
   );
 
   const totalUsers = users.length;
@@ -33,7 +37,7 @@ export default function UserDashboard({ initialUsers }: UserDashboardProps) {
     company: string;
   }) => {
     const newUser: User = {
-      id: users.length + 1,
+      id: Date.now(),
       name: input.name,
       username: input.name.toLowerCase().replace(/\s+/g, ""),
       email: input.email,
@@ -85,8 +89,8 @@ export default function UserDashboard({ initialUsers }: UserDashboardProps) {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredUsers.map((user, index) => (
-          <UserCard key={index} user={user} />
+        {filteredUsers.map((user) => (
+          <UserCard key={user.id} user={user} />
         ))}
       </div>
 
