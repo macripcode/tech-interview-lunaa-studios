@@ -17,16 +17,15 @@ export default function UserDashboard({ initialUsers }: UserDashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { showToast } = useToast();
 
-  const filteredUsers = useMemo(
-    () =>
-      users.filter(
-        (user) =>
-          user.name.includes(search) ||
-          user.email.includes(search) ||
-          user.company.name.includes(search)
-      ),
-    [users, search]
-  );
+  const filteredUsers = useMemo(() => {
+    const term = search.toLowerCase();
+    return users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(term) ||
+        user.email.toLowerCase().includes(term) ||
+        user.company.name.toLowerCase().includes(term)
+    );
+  }, [users, search]);
 
   const totalUsers = users.length;
   const matchedCount = filteredUsers.length;
