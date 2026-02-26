@@ -1,21 +1,17 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { type User, type CreateUserInput } from "@/types/user";
+import { type CreateUserInput } from "@/types/user";
 import UserListToolbar from "@/components/UserListToolbar";
 import UserCard from "@/components/UserCard";
 import dynamic from "next/dynamic";
 
 const CreateUserModal = dynamic(() => import("@/components/CreateUserModal"));
 import { useToast } from "@/components/ToastProvider";
-import { buildLocalUser } from "@/lib/userService";
+import { useUsers } from "@/contexts/UsersContext";
 
-interface UserDashboardProps {
-  initialUsers: User[];
-}
-
-export default function UserDashboard({ initialUsers }: UserDashboardProps) {
-  const [users, setUsers] = useState<User[]>(initialUsers);
+export default function UserDashboard() {
+  const { users, addUser } = useUsers();
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { showToast } = useToast();
@@ -35,10 +31,10 @@ export default function UserDashboard({ initialUsers }: UserDashboardProps) {
 
   const handleUserCreated = useCallback(
     (input: CreateUserInput) => {
-      setUsers((prev) => [...prev, buildLocalUser(input)]);
+      addUser(input);
       showToast("Usuario creado exitosamente", "success");
     },
-    [showToast]
+    [addUser, showToast]
   );
 
   const handleOpenModal = useCallback(() => setIsModalOpen(true), []);
