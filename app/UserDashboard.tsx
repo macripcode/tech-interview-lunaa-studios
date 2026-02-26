@@ -4,7 +4,9 @@ import { useState, useMemo, useCallback } from "react";
 import { type User, type CreateUserInput } from "@/types/user";
 import UserListToolbar from "@/components/UserListToolbar";
 import UserCard from "@/components/UserCard";
-import CreateUserModal from "@/components/CreateUserModal";
+import dynamic from "next/dynamic";
+
+const CreateUserModal = dynamic(() => import("@/components/CreateUserModal"));
 import { useToast } from "@/components/ToastProvider";
 import { buildLocalUser } from "@/lib/userService";
 

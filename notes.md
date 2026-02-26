@@ -59,6 +59,9 @@ Revisa el código existente y encuentra errores sutiles que afectan la funcional
 | components | SearchBar.tsx       | - Debounce de 300ms para evitar filtrado en cada keystroke <br> - React.memo <br> - useCallback en `handleChange` |
 | components | ToastProvider.tsx   | - Cleanup de `setTimeout` usando `useRef<Map>` para prevenir memory leaks |
 | components | UserCard.tsx        | - React.memo para evitar re-renders innecesarios cuando cambia el padre |
+| components | UserListToolbar.tsx | - React.memo para evitar re-renders cuando cambia el padre <br> - Callbacks estables recibidos desde UserDashboard con useCallback |
+| app        | UserDashboard.tsx   | - useCallback en `handleUserCreated`, `handleOpenModal` y `handleCloseModal` para estabilizar referencias y hacer efectivo el `memo` en `CreateUserModal` y `UserListToolbar` |
+| app        | UserDashboard.tsx   | - `dynamic(() => import("@/components/CreateUserModal"))` para lazy loading: el bundle del modal solo se descarga cuando se abre por primera vez |
 
 Analiza los componentes y encuentra oportunidades de optimización de rendimiento. Aplica las mejoras que consideres necesarias.
 
