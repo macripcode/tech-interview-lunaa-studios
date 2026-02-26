@@ -55,6 +55,9 @@ Revisa el código existente y encuentra errores sutiles que afectan la funcional
 | lib        | userService.ts             | `buildLocalUser` asigna `company: input.company` directo, sin transformación manual al objeto |
 | hooks      | useUserForm.ts             | `EMPTY_FORM.company` actualizado a objeto `{ name, catchPhrase, bs }`; `handleChange` actualiza `company.name` |
 | components | CreateUserModal.tsx        | Input de empresa lee `form.company.name` para alinearse con el tipo `User.company` |
+| contexts   | UsersContext.tsx (nuevo)   | Contexto global con estado `users[]` e inicial cargado desde la API; expone `addUser` |
+| app        | page.tsx                   | Envuelve `UserDashboard` con `<UsersProvider initialUsers={users}>` para inyectar datos del servidor |
+| app        | UserDashboard.tsx          | Eliminada la prop `initialUsers` y el estado local de `users`; ahora consume `useUsers()` del contexto |
 
 
 

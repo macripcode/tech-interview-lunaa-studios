@@ -1,25 +1,31 @@
 "use client";
 
 import { useCallback, memo } from "react";
+import { type CreateUserInput } from "@/types/user";
 import { useUserForm } from "@/hooks/useUserForm";
+import { useToast } from "@/components/ToastProvider";
 
 interface CreateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUserCreated: (user: { name: string; email: string; company: string }) => void;
+  onUserCreated: (input: CreateUserInput) => void;
 }
 
 function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProps) {
-  const { form, errors, validate, handleChange } = useUserForm(isOpen);
+  const { form, errors, isFormValid, validate, handleChange } = useUserForm(isOpen);
+  const { showToast } = useToast();
 
   const handleSubmit = useCallback(
     (e: React.SyntheticEvent) => {
       e.preventDefault();
-      if (!validate()) return;
+      if (!validate()) {
+        showToast("Por favor, completa todos los campos correctamente.", "error");
+        return;
+      }
       onUserCreated(form);
       onClose();
     },
-    [form, validate, onUserCreated, onClose]
+    [form, validate, onUserCreated, onClose, showToast]
   );
 
   if (!isOpen) return null;
@@ -92,7 +98,8 @@ function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProp
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              disabled={!isFormValid}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Crear Usuario
             </button>
