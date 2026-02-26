@@ -58,6 +58,13 @@ Revisa el código existente y encuentra errores sutiles que afectan la funcional
 | contexts   | UsersContext.tsx (nuevo)   | Contexto global con estado `users[]` e inicial cargado desde la API; expone `addUser` |
 | app        | page.tsx                   | Envuelve `UserDashboard` con `<UsersProvider initialUsers={users}>` para inyectar datos del servidor |
 | app        | UserDashboard.tsx          | Eliminada la prop `initialUsers` y el estado local de `users`; ahora consume `useUsers()` del contexto |
+| hooks      | useUserForm.ts             | Validación en tiempo real por campo: estado `touched` por campo, errores visibles solo en campos tocados; `isFormValid` siempre calcula todos los campos |
+| components | CreateUserModal.tsx        | Botón "Crear Usuario" deshabilitado con `disabled={!isFormValid}` + estilos `disabled:opacity-50 disabled:cursor-not-allowed` |
+| components | CreateUserModal.tsx        | Toast de error si `validate()` falla en el submit; toast de éxito en `UserDashboard` al completar |
+| app        | layout.tsx                 | `async RootLayout`: único punto de fetch (`await getUsers()`), envuelve toda la app con `<UsersProvider>` |
+| contexts   | UsersContext.tsx           | Agrega `getUserById(id)` que busca en el array en memoria; expone la operación de lectura por ID |
+| app        | page.tsx                   | Eliminado el fetch y el provider; solo renderiza `UserDashboard` (datos vienen del layout) |
+| app        | users/[id]/page.tsx        | Convertido a Client Component; usa `useParams()` y `getUserById()` del contexto — sin fetch a la API, usuarios locales también accesibles |
 
 
 

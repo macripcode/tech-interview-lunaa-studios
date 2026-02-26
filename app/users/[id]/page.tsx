@@ -1,21 +1,20 @@
-import { getUserById } from "@/lib/userService";
+"use client";
+
+import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
+import { useUsers } from "@/contexts/UsersContext";
 import Layout from "@/components/Layout";
 import UserProfile from "@/components/UserProfile";
-import { notFound } from "next/navigation";
 
-interface UserDetailPageProps {
-  params: Promise<{ id: string }>;
-}
-
-export default async function UserDetailPage({ params }: UserDetailPageProps) {
-  const { id } = await params;
+export default function UserDetailPage() {
+  const { id } = useParams<{ id: string }>();
   const numericId = Number(id);
+  const { getUserById } = useUsers();
 
-  if (isNaN(numericId)) {
-    notFound();
-  }
+  if (isNaN(numericId)) notFound();
 
-  const user = await getUserById(numericId).catch(() => notFound());
+  const user = getUserById(numericId);
+  if (!user) notFound();
 
   return (
     <Layout>

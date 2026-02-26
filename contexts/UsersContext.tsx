@@ -13,6 +13,7 @@ import { buildLocalUser } from "@/lib/userService";
 interface UsersContextType {
   users: User[];
   addUser: (input: CreateUserInput) => void;
+  getUserById: (id: number) => User | undefined;
 }
 
 const UsersContext = createContext<UsersContextType | undefined>(undefined);
@@ -37,8 +38,13 @@ export function UsersProvider({ initialUsers, children }: UsersProviderProps) {
     setUsers((prev) => [...prev, buildLocalUser(input)]);
   }, []);
 
+  const getUserById = useCallback(
+    (id: number) => users.find((u) => u.id === id),
+    [users]
+  );
+
   return (
-    <UsersContext.Provider value={{ users, addUser }}>
+    <UsersContext.Provider value={{ users, addUser, getUserById }}>
       {children}
     </UsersContext.Provider>
   );
