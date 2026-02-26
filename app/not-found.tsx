@@ -1,0 +1,23 @@
+import Layout from "@/components/Layout";
+import Link from "next/link";
+
+export default function NotFound() {
+  return (
+    <Layout>
+      <div className="flex flex-col items-center justify-center py-20">
+        <h2 className="text-2xl font-semibold text-gray-900">
+          Página no encontrada
+        </h2>
+        <p className="mt-2 text-sm text-gray-500">
+          El recurso que buscas no existe o fue eliminado.
+        </p>
+        <Link
+          href="/"
+          className="mt-6 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          Volver al inicio
+        </Link>
+      </div>
+    </Layout>
+  );
+}
