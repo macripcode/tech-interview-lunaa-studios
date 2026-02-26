@@ -2,16 +2,22 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const EMPTY_FORM = { name: "", email: "", company: "" };
+const EMPTY_FORM = {
+  name: "",
+  email: "",
+  company: { name: "", catchPhrase: "", bs: "" },
+};
+
+const EMPTY_ERRORS = { name: "", email: "", company: "" };
 
 export function useUserForm(isOpen: boolean) {
   const [form, setForm] = useState(EMPTY_FORM);
-  const [errors, setErrors] = useState(EMPTY_FORM);
+  const [errors, setErrors] = useState(EMPTY_ERRORS);
 
   useEffect(() => {
     if (!isOpen) {
       setForm(EMPTY_FORM);
-      setErrors(EMPTY_FORM);
+      setErrors(EMPTY_ERRORS);
     }
   }, [isOpen]);
 
@@ -23,7 +29,7 @@ export function useUserForm(isOpen: boolean) {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       next.email = "El email no tiene un formato válido.";
     }
-    if (!form.company.trim()) next.company = "La empresa es obligatoria.";
+    if (!form.company.name.trim()) next.company = "La empresa es obligatoria.";
     setErrors(next);
     return !next.name && !next.email && !next.company;
   }, [form]);
@@ -31,7 +37,11 @@ export function useUserForm(isOpen: boolean) {
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
-      setForm((prev) => ({ ...prev, [name]: value }));
+      if (name === "company") {
+        setForm((prev) => ({ ...prev, company: { ...prev.company, name: value } }));
+      } else {
+        setForm((prev) => ({ ...prev, [name]: value }));
+      }
       if (errors[name as keyof typeof errors]) {
         setErrors((prev) => ({ ...prev, [name]: "" }));
       }

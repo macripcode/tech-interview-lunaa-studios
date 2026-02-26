@@ -26,6 +26,6 @@ export function buildLocalUser(input: CreateUserInput): User {
     },
     phone: "",
     website: "",
-    company: { name: input.company, catchPhrase: "", bs: "" },
+    company: input.company,
   };
 }

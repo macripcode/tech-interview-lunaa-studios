@@ -51,6 +51,10 @@ Revisa el código existente y encuentra errores sutiles que afectan la funcional
 | components | ToastList.tsx (nuevo)      | Responsabilidad única: renderiza la lista de notificaciones toast |
 | components | CreateUserModal.tsx        | Lógica del formulario (estado, validación, reset) extraída al hook `useUserForm` |
 | hooks      | useUserForm.ts (nuevo)     | Hook con estado del formulario, errores, `validate` y `handleChange`; modal queda solo con UI |
+| types      | user.ts                    | `CreateUserInput` reemplazado por `Pick<User, "name" \| "email" \| "company">`: un único tipo derivado de `User`, sin duplicación de campos |
+| lib        | userService.ts             | `buildLocalUser` asigna `company: input.company` directo, sin transformación manual al objeto |
+| hooks      | useUserForm.ts             | `EMPTY_FORM.company` actualizado a objeto `{ name, catchPhrase, bs }`; `handleChange` actualiza `company.name` |
+| components | CreateUserModal.tsx        | Input de empresa lee `form.company.name` para alinearse con el tipo `User.company` |
 
 
 

@@ -75,7 +75,7 @@ function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProp
             <input
               type="text"
               name="company"
-              value={form.company}
+              value={form.company.name}
               onChange={handleChange}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Nombre de la empresa"

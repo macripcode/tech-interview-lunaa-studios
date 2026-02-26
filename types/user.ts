@@ -22,8 +22,4 @@ export interface User {
   };
 }
 
-export interface CreateUserInput {
-  name: string;
-  email: string;
-  company: string;
-}
+export type CreateUserInput = Pick<User, "name" | "email" | "company">;
