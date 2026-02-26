@@ -47,6 +47,10 @@ Revisa el código existente y encuentra errores sutiles que afectan la funcional
 | app        | users/[id]/page.tsx        | Page reducida a fetch + render, delegando UI a `UserProfile` |
 | app        | UserDashboard.tsx          | **Bug:** `handleUserCreated`, `onClose` y `onNewUser` recreados en cada render → `React.memo` en `CreateUserModal` y `UserListToolbar` era inefectivo. Corregido wrapping con `useCallback` |
 | app        | users/[id]/page.tsx        | **Bug:** `let user` sin tipo explícito quedaba como `User \| undefined` tras el try/catch → error de tipos al pasar a `<UserProfile>`. Corregido con `.catch(() => notFound())` que infiere `User` directamente |
+| components | ToastProvider.tsx          | UI de toasts extraída a `ToastList.tsx`; provider ahora solo gestiona contexto, estado y timers |
+| components | ToastList.tsx (nuevo)      | Responsabilidad única: renderiza la lista de notificaciones toast |
+| components | CreateUserModal.tsx        | Lógica del formulario (estado, validación, reset) extraída al hook `useUserForm` |
+| hooks      | useUserForm.ts (nuevo)     | Hook con estado del formulario, errores, `validate` y `handleChange`; modal queda solo con UI |
 
 
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, memo } from "react";
+import { useCallback, memo } from "react";
+import { useUserForm } from "@/hooks/useUserForm";
 
 interface CreateUserModalProps {
   isOpen: boolean;
@@ -8,39 +9,8 @@ interface CreateUserModalProps {
   onUserCreated: (user: { name: string; email: string; company: string }) => void;
 }
 
-const EMPTY_FORM = { name: "", email: "", company: "" };
-
 function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProps) {
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [errors, setErrors] = useState(EMPTY_FORM);
-
-  useEffect(() => {
-    if (!isOpen) {
-      setForm(EMPTY_FORM);
-      setErrors(EMPTY_FORM);
-    }
-  }, [isOpen]);
-
-  const validate = () => {
-    const next = { name: "", email: "", company: "" };
-    if (!form.name.trim()) next.name = "El nombre es obligatorio.";
-    if (!form.email.trim()) {
-      next.email = "El email es obligatorio.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      next.email = "El email no tiene un formato válido.";
-    }
-    if (!form.company.trim()) next.company = "La empresa es obligatoria.";
-    setErrors(next);
-    return !next.name && !next.email && !next.company;
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof typeof errors]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-  };
+  const { form, errors, validate, handleChange } = useUserForm(isOpen);
 
   const handleSubmit = useCallback(
     (e: React.SyntheticEvent) => {
@@ -49,7 +19,7 @@ function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProp
       onUserCreated(form);
       onClose();
     },
-    [form, onUserCreated, onClose]
+    [form, validate, onUserCreated, onClose]
   );
 
   if (!isOpen) return null;
