@@ -38,7 +38,15 @@ Revisa el código existente y encuentra errores sutiles que afectan la funcional
 | components | UserCard.tsx               | `aria-label="Ver perfil de {nombre}"` en el Link |
 | components | UserCard.tsx               | `aria-hidden="true"` en el avatar decorativo |
 | —          | package.json               | `--no-turbopack` en el script dev para evitar error de WASM |
-|lib         | api.ts                     | Pasando la respuesta sin modificar
+| lib        | api.ts                     | Pasando la respuesta sin modificar (interceptor de éxito como `undefined`) |
+| app        | UserDashboard.tsx          | Búsqueda case-insensitive con `.toLowerCase()` en nombre, email y empresa |
+| lib        | userService.ts             | `buildLocalUser` extraído de UserDashboard: lógica de construcción de `User` local fuera de la UI |
+| app        | UserDashboard.tsx          | Toolbar extraído a `UserListToolbar`, responsabilidad única de orquestación de estado |
+| components | UserListToolbar.tsx (nuevo)| Nuevo componente con SearchBar, contador y botón "Nuevo Usuario" |
+| components | UserProfile.tsx (nuevo)    | UI del perfil de usuario extraída de `app/users/[id]/page.tsx` |
+| app        | users/[id]/page.tsx        | Page reducida a fetch + render, delegando UI a `UserProfile` |
+| app        | UserDashboard.tsx          | **Bug:** `handleUserCreated`, `onClose` y `onNewUser` recreados en cada render → `React.memo` en `CreateUserModal` y `UserListToolbar` era inefectivo. Corregido wrapping con `useCallback` |
+| app        | users/[id]/page.tsx        | **Bug:** `let user` sin tipo explícito quedaba como `User \| undefined` tras el try/catch → error de tipos al pasar a `<UserProfile>`. Corregido con `.catch(() => notFound())` que infiere `User` directamente |
 
 
 
