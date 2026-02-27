@@ -6,7 +6,7 @@ import { type User, type CreateUserInput } from "@/types/user";
 import { useUsers } from "@/contexts/UsersContext";
 import { useToast } from "@/components/ToastProvider";
 import { userToFormValues } from "@/hooks/useUserForm";
-import CreateUserModal from "@/components/CreateUserModal";
+import CreateEditUserModal from "@/components/CreateEditUserModal";
 
 interface UserProfileProps {
   user: User;
@@ -145,7 +145,7 @@ export default function UserProfile({ user }: UserProfileProps) {
         </div>
       </div>
 
-      <CreateUserModal
+      <CreateEditUserModal
         isOpen={isEditOpen}
         onClose={handleCloseEdit}
         onSubmit={handleUserUpdated}

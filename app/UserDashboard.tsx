@@ -6,7 +6,7 @@ import UserListToolbar from "@/components/UserListToolbar";
 import UserCard from "@/components/UserCard";
 import dynamic from "next/dynamic";
 
-const CreateUserModal = dynamic(() => import("@/components/CreateUserModal"));
+const CreateEditUserModal = dynamic(() => import("@/components/CreateEditUserModal"));
 import { useToast } from "@/components/ToastProvider";
 import { useUsers } from "@/contexts/UsersContext";
 
@@ -64,7 +64,7 @@ export default function UserDashboard() {
         </div>
       )}
 
-      <CreateUserModal
+      <CreateEditUserModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleUserCreated}

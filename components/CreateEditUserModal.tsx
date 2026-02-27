@@ -5,7 +5,7 @@ import { type CreateUserInput } from "@/types/user";
 import { useUserForm, type UserFormValues } from "@/hooks/useUserForm";
 import { useToast } from "@/components/ToastProvider";
 
-interface CreateUserModalProps {
+interface CreateEditUserModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (input: CreateUserInput) => void;
@@ -17,14 +17,14 @@ interface CreateUserModalProps {
 const inputClass =
   "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500";
 
-function CreateUserModal({
+function CreateEditUserModal({
   isOpen,
   onClose,
   onSubmit,
   initialValues,
   title = "Nuevo Usuario",
   submitLabel = "Crear Usuario",
-}: CreateUserModalProps) {
+}: CreateEditUserModalProps) {
   const { form, errors, isFormValid, isAdvanced, validate, activateAdvanced, handleChange } =
     useUserForm(isOpen, initialValues);
   const { showToast } = useToast();
@@ -268,4 +268,4 @@ function CreateUserModal({
   );
 }
 
-export default memo(CreateUserModal);
+export default memo(CreateEditUserModal);
