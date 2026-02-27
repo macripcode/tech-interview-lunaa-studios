@@ -237,6 +237,10 @@ Sobre las nuevas funcionalidades: la búsqueda en el listado es case-insensitive
 
 Importante tener en cuenta que todos estos cambios (usuarios creados, editados o eliminados) viven únicamente en memoria. Si la página se recarga, el estado del store vuelve pristine: los usuarios que provienen de la API, sin ninguna modificación local.
 
+La estructura del proyecto está organizada de forma que cualquier persona que llegue al código por primera vez puede orientarse rápidamente. Cada carpeta tiene una responsabilidad clara y delimitada: app/ contiene exclusivamente las páginas, layouts y archivos especiales de Next.js (como error.tsx y not-found.tsx), nada más. Los componentes de UI viven todos en components/, los hooks reutilizables en hooks/, la lógica de acceso a datos en lib/, el estado global en contexts/ y los tipos en types/. Esta separación no es solo organizativa, también facilita escalar: si mañana se agrega una sección de productos, se crean sus propios archivos en cada carpeta sin tocar los de usuarios. Si se necesita un nuevo hook de formulario, va a hooks/ y no contamina los componentes. Si cambia la API, solo se modifica lib/ sin afectar la UI.
+
+Un aspecto que refleja bien este criterio es que UserDashboard no vive en app/ sino en components/, aunque se podría haber dejado allí sin que el proyecto dejara de funcionar. La razón de moverlo es de concepto: en el App Router de Next.js, app/ es el sistema de rutas, no un lugar para componentes de interfaz. Mezclar ambas cosas dificulta entender qué es una página y qué es un componente, especialmente cuando el proyecto crece. Los nombres de archivos también siguen convenciones consistentes: PascalCase para componentes, camelCase para hooks y servicios, lo que elimina la duda de dónde buscar algo. En conjunto, la estructura actual permite mantener el código sin fricciones y añadir funcionalidades nuevas con un mínimo de impacto sobre lo existente.
+
 
 ### 3. RoadBlocks: 
  - No ejecutaba en mac. Solución: Se eliminó carpeta .next, node_modules, y package-lock.json y se ejecuto nuevamente.
