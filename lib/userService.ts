@@ -5,8 +5,12 @@ const DEFAULT_GEO = { lat: "0", lng: "0" };
 const USERNAME_SLUG_REGEX = /\s+/g;
 
 export async function getUsers(): Promise<User[]> {
-  const { data } = await api.get<User[]>("/users");
-  return data;
+  try {
+    const { data } = await api.get<User[]>("/users");
+    return data;
+  } catch {
+    return [];
+  }
 }
 
 export async function getUserById(id: number): Promise<User> {
