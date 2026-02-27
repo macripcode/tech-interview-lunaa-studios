@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, memo } from "react";
+import { useCallback, memo, useEffect, useRef, useId } from "react";
 import { type CreateUserInput } from "@/types/user";
 import { useUserForm, type UserFormValues } from "@/hooks/useUserForm";
 import { useToast } from "@/components/ToastProvider";
@@ -25,6 +25,11 @@ function CreateEditUserModal({
   title = "Nuevo Usuario",
   submitLabel = "Crear Usuario",
 }: CreateEditUserModalProps) {
+  const uid = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const firstInputRef = useRef<HTMLInputElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
   const { form, errors, isFormValid, isAdvanced, validate, activateAdvanced, handleChange } =
     useUserForm(isOpen, initialValues);
   const { showToast } = useToast();
@@ -42,20 +47,71 @@ function CreateEditUserModal({
     [form, validate, onSubmit, onClose, showToast]
   );
 
+  // Focus management: save trigger element, focus first input on open, restore on close
+  useEffect(() => {
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
+      firstInputRef.current?.focus();
+    } else {
+      previousFocusRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  // Keyboard: Escape to close + Tab focus trap
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key === "Tab") {
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusable || focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative mx-4 w-full max-w-md rounded-xl bg-white shadow-xl">
+      <div className="fixed inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`${uid}-title`}
+        className="relative mx-4 w-full max-w-md rounded-xl bg-white shadow-xl"
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4">
-          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+          <h2 id={`${uid}-title`} className="text-lg font-semibold text-gray-900">{title}</h2>
           <button
             onClick={onClose}
+            aria-label="Cerrar"
             className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -67,23 +123,27 @@ function CreateEditUserModal({
 
             {/* name */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Nombre</label>
+              <label htmlFor={`${uid}-name`} className="mb-1 block text-sm font-medium text-gray-700">Nombre</label>
               <input
+                ref={firstInputRef}
+                id={`${uid}-name`}
                 type="text"
                 name="name"
                 value={form.name}
                 onChange={handleChange}
                 className={inputClass}
                 placeholder="Nombre completo"
+                aria-describedby={errors.name ? `${uid}-name-error` : undefined}
               />
-              {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+              {errors.name && <p id={`${uid}-name-error`} role="alert" className="mt-1 text-xs text-red-500">{errors.name}</p>}
             </div>
 
             {/* username — visible only in advanced mode */}
             {isAdvanced && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Username</label>
+                <label htmlFor={`${uid}-username`} className="mb-1 block text-sm font-medium text-gray-700">Username</label>
                 <input
+                  id={`${uid}-username`}
                   type="text"
                   name="username"
                   value={form.username}
@@ -96,16 +156,18 @@ function CreateEditUserModal({
 
             {/* email */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
+              <label htmlFor={`${uid}-email`} className="mb-1 block text-sm font-medium text-gray-700">Email</label>
               <input
+                id={`${uid}-email`}
                 type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
                 className={inputClass}
                 placeholder="correo@ejemplo.com"
+                aria-describedby={errors.email ? `${uid}-email-error` : undefined}
               />
-              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+              {errors.email && <p id={`${uid}-email-error`} role="alert" className="mt-1 text-xs text-red-500">{errors.email}</p>}
             </div>
 
             {/* address — visible only in advanced mode */}
@@ -113,8 +175,9 @@ function CreateEditUserModal({
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Calle</label>
+                    <label htmlFor={`${uid}-street`} className="mb-1 block text-sm font-medium text-gray-700">Calle</label>
                     <input
+                      id={`${uid}-street`}
                       type="text"
                       name="address.street"
                       value={form.address.street}
@@ -124,8 +187,9 @@ function CreateEditUserModal({
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Suite</label>
+                    <label htmlFor={`${uid}-suite`} className="mb-1 block text-sm font-medium text-gray-700">Suite</label>
                     <input
+                      id={`${uid}-suite`}
                       type="text"
                       name="address.suite"
                       value={form.address.suite}
@@ -137,8 +201,9 @@ function CreateEditUserModal({
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Ciudad</label>
+                    <label htmlFor={`${uid}-city`} className="mb-1 block text-sm font-medium text-gray-700">Ciudad</label>
                     <input
+                      id={`${uid}-city`}
                       type="text"
                       name="address.city"
                       value={form.address.city}
@@ -148,8 +213,9 @@ function CreateEditUserModal({
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">Código postal</label>
+                    <label htmlFor={`${uid}-zipcode`} className="mb-1 block text-sm font-medium text-gray-700">Código postal</label>
                     <input
+                      id={`${uid}-zipcode`}
                       type="text"
                       name="address.zipcode"
                       value={form.address.zipcode}
@@ -165,8 +231,9 @@ function CreateEditUserModal({
             {/* phone — visible only in advanced mode */}
             {isAdvanced && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Teléfono</label>
+                <label htmlFor={`${uid}-phone`} className="mb-1 block text-sm font-medium text-gray-700">Teléfono</label>
                 <input
+                  id={`${uid}-phone`}
                   type="text"
                   name="phone"
                   value={form.phone}
@@ -180,8 +247,9 @@ function CreateEditUserModal({
             {/* website — visible only in advanced mode */}
             {isAdvanced && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Sitio web</label>
+                <label htmlFor={`${uid}-website`} className="mb-1 block text-sm font-medium text-gray-700">Sitio web</label>
                 <input
+                  id={`${uid}-website`}
                   type="text"
                   name="website"
                   value={form.website}
@@ -194,24 +262,27 @@ function CreateEditUserModal({
 
             {/* company.name */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Empresa</label>
+              <label htmlFor={`${uid}-company`} className="mb-1 block text-sm font-medium text-gray-700">Empresa</label>
               <input
+                id={`${uid}-company`}
                 type="text"
                 name="company"
                 value={form.company.name}
                 onChange={handleChange}
                 className={inputClass}
                 placeholder="Nombre de la empresa"
+                aria-describedby={errors.company ? `${uid}-company-error` : undefined}
               />
-              {errors.company && <p className="mt-1 text-xs text-red-500">{errors.company}</p>}
+              {errors.company && <p id={`${uid}-company-error`} role="alert" className="mt-1 text-xs text-red-500">{errors.company}</p>}
             </div>
 
             {/* company.catchPhrase + company.bs — visible only in advanced mode */}
             {isAdvanced && (
               <>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Slogan</label>
+                  <label htmlFor={`${uid}-catchphrase`} className="mb-1 block text-sm font-medium text-gray-700">Slogan</label>
                   <input
+                    id={`${uid}-catchphrase`}
                     type="text"
                     name="company.catchPhrase"
                     value={form.company.catchPhrase}
@@ -221,8 +292,9 @@ function CreateEditUserModal({
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Sector</label>
+                  <label htmlFor={`${uid}-bs`} className="mb-1 block text-sm font-medium text-gray-700">Sector</label>
                   <input
+                    id={`${uid}-bs`}
                     type="text"
                     name="company.bs"
                     value={form.company.bs}
