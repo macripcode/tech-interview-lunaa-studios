@@ -239,4 +239,4 @@ Importante tener en cuenta que todos estos cambios (usuarios creados, editados o
 
 
 ### RoadBlocks: 
- - No ejecutaba en mac. Se eliminó carpeta .next, node_modules, y package-lock.json
+ - No ejecutaba en mac. Solución: Se eliminó carpeta .next, node_modules, y package-lock.json y se ejecuto nuevamente.
