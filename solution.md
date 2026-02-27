@@ -1,6 +1,6 @@
 The purpose of this files is to document the solving process of the technical test for the Front End position at Lunaa Studio.
 
-### Listado detallado de cambios por folder y archivo
+### 1. Listado detallado de cambios por folder y archivo
 
 ## app
 
@@ -238,5 +238,8 @@ Sobre las nuevas funcionalidades: la búsqueda en el listado es case-insensitive
 Importante tener en cuenta que todos estos cambios (usuarios creados, editados o eliminados) viven únicamente en memoria. Si la página se recarga, el estado del store vuelve pristine: los usuarios que provienen de la API, sin ninguna modificación local.
 
 
-### RoadBlocks: 
+### 3. RoadBlocks: 
  - No ejecutaba en mac. Solución: Se eliminó carpeta .next, node_modules, y package-lock.json y se ejecuto nuevamente.
+
+### 4. Live Demo: 
+https://lunaa-studios-interview26022026.vercel.app/
