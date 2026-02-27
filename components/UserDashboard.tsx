@@ -56,10 +56,24 @@ export default function UserDashboard() {
         ))}
       </div>
 
-      {filteredUsers.length === 0 && (
+      {totalUsers === 0 && (
+        <div className="flex flex-col items-center py-20">
+          <p className="text-base font-medium text-gray-700">No hay usuarios registrados</p>
+          <p className="mt-1 text-sm text-gray-500">Crea el primero para comenzar.</p>
+          <button
+            onClick={handleOpenModal}
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            Crear primer usuario
+          </button>
+        </div>
+      )}
+
+      {totalUsers > 0 && filteredUsers.length === 0 && (
         <div className="py-12 text-center">
           <p className="text-sm text-gray-500">
-            No se encontraron usuarios que coincidan con la búsqueda.
+            No se encontraron usuarios para{" "}
+            <span className="font-medium text-gray-700">«{search}»</span>.
           </p>
         </div>
       )}
