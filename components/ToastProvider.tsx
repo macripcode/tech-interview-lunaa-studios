@@ -11,6 +11,8 @@ import {
 } from "react";
 import ToastList, { type Toast } from "./ToastList";
 
+const TOAST_DURATION_MS = 3500;
+
 interface ToastContextType {
   showToast: (message: string, type: "success" | "error") => void;
 }
@@ -40,7 +42,7 @@ export default function ToastProvider({ children }: { children: ReactNode }) {
       const timer = setTimeout(() => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
         timersRef.current.delete(id);
-      }, 3500);
+      }, TOAST_DURATION_MS);
       timersRef.current.set(id, timer);
     },
     []

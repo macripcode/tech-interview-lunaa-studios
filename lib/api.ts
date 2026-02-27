@@ -9,7 +9,7 @@ const api = axios.create({
 });
 
 api.interceptors.response.use(
-  undefined,
+  (response) => response,
   (error) => {
     const normalized = {
       message:

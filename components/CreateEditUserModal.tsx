@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, memo, useEffect, useRef, useId } from "react";
+import { useCallback, memo, useRef, useId } from "react";
 import { type CreateUserInput } from "@/types/user";
 import { useUserForm, type UserFormValues } from "@/hooks/useUserForm";
 import { useToast } from "@/components/ToastProvider";
+import { useModalFocus } from "@/hooks/useModalFocus";
 
 interface CreateEditUserModalProps {
   isOpen: boolean;
@@ -26,9 +27,8 @@ function CreateEditUserModal({
   submitLabel = "Crear Usuario",
 }: CreateEditUserModalProps) {
   const uid = useId();
-  const dialogRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
-  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const dialogRef = useModalFocus(isOpen, onClose, firstInputRef);
 
   const { form, errors, isFormValid, isAdvanced, validate, activateAdvanced, handleChange } =
     useUserForm(isOpen, initialValues);
@@ -46,50 +46,6 @@ function CreateEditUserModal({
     },
     [form, validate, onSubmit, onClose, showToast]
   );
-
-  // Focus management: save trigger element, focus first input on open, restore on close
-  useEffect(() => {
-    if (isOpen) {
-      previousFocusRef.current = document.activeElement as HTMLElement;
-      firstInputRef.current?.focus();
-    } else {
-      previousFocusRef.current?.focus();
-    }
-  }, [isOpen]);
-
-  // Keyboard: Escape to close + Tab focus trap
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-        return;
-      }
-      if (e.key === "Tab") {
-        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        if (!focusable || focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
-        }
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 

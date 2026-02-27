@@ -2,8 +2,6 @@ The purpose of this files is to document the solving process of the technical te
 
 ### Listado detallado de cambios por folder y archivo
 
-# 📦 Changes by File
-
 ## app
 
 <details>
