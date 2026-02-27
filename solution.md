@@ -37,15 +37,9 @@ The purpose of this files is to document the solving process of the technical te
 </details>
 
 <details>
-<summary><strong>UserDashboard.tsx</strong></summary>
+<summary><strong>UserDashboard.tsx → movido a components/</strong></summary>
 
-- useMemo en `filteredUsers`
-- `Date.now()` para IDs únicos
-- `key={user.id}` en lugar de `index`
-- Búsqueda case-insensitive
-- Toolbar extraído a `UserListToolbar`
-- Callbacks estabilizados con `useCallback`
-- Prop actualizada a `onSubmit`
+- Movido desde `app/` a `components/` — no es una página sino un componente de UI; `app/` en el App Router es exclusivamente para rutas y archivos especiales de Next.js
 
 </details>
 
@@ -62,6 +56,20 @@ The purpose of this files is to document the solving process of the technical te
 ---
 
 ## components
+
+<details>
+<summary><strong>UserDashboard.tsx (movido desde app/)</strong></summary>
+
+- useMemo en `filteredUsers`
+- `Date.now()` para IDs únicos
+- `key={user.id}` en lugar de `index`
+- Búsqueda case-insensitive
+- Toolbar extraído a `UserListToolbar`
+- Callbacks estabilizados con `useCallback`
+- Prop actualizada a `onSubmit`
+- Estados vacíos diferenciados: sin usuarios registrados (con CTA) vs. sin resultados de búsqueda
+
+</details>
 
 <details>
 <summary><strong>CreateEditUserModal.tsx</strong></summary>
