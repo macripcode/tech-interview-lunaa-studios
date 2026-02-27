@@ -246,4 +246,4 @@ Un aspecto que refleja bien este criterio es que UserDashboard no vive en app/ s
  - No ejecutaba en mac. Solución: Se eliminó carpeta .next, node_modules, y package-lock.json y se ejecuto nuevamente.
 
 ### 4. Live Demo: 
-https://lunaa-studios-interview26022026.vercel.app/
+https://tech-interview-lunaa-studios-202602.vercel.app/
