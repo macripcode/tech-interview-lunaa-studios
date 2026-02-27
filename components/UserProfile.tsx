@@ -1,14 +1,36 @@
+"use client";
+
+import { useState, useCallback } from "react";
 import Link from "next/link";
-import { type User } from "@/types/user";
+import { type User, type CreateUserInput } from "@/types/user";
+import { useUsers } from "@/contexts/UsersContext";
+import { useToast } from "@/components/ToastProvider";
+import { userToFormValues } from "@/hooks/useUserForm";
+import CreateUserModal from "@/components/CreateUserModal";
 
 interface UserProfileProps {
   user: User;
 }
 
 export default function UserProfile({ user }: UserProfileProps) {
+  const { updateUser } = useUsers();
+  const { showToast } = useToast();
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const handleOpenEdit = useCallback(() => setIsEditOpen(true), []);
+  const handleCloseEdit = useCallback(() => setIsEditOpen(false), []);
+
+  const handleUserUpdated = useCallback(
+    (input: CreateUserInput) => {
+      updateUser(user.id, input);
+      showToast("Usuario actualizado exitosamente", "success");
+    },
+    [updateUser, user.id, showToast]
+  );
+
   return (
     <>
-      <div className="mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <Link
           href="/"
           className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900"
@@ -21,14 +43,35 @@ export default function UserProfile({ user }: UserProfileProps) {
             stroke="currentColor"
             aria-hidden="true"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 19.5L8.25 12l7.5-7.5"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
           Volver al listado
         </Link>
+
+        {/* Action buttons */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleOpenEdit}
+            aria-label="Editar usuario"
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+          >
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"
+              />
+            </svg>
+          </button>
+          {/* Placeholder for second button */}
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
@@ -41,9 +84,7 @@ export default function UserProfile({ user }: UserProfileProps) {
               {user.name.charAt(0)}
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">
-                {user.name}
-              </h1>
+              <h1 className="text-xl font-semibold text-gray-900">{user.name}</h1>
               <p className="text-sm text-gray-500">@{user.username}</p>
             </div>
           </div>
@@ -103,6 +144,15 @@ export default function UserProfile({ user }: UserProfileProps) {
           </section>
         </div>
       </div>
+
+      <CreateUserModal
+        isOpen={isEditOpen}
+        onClose={handleCloseEdit}
+        onSubmit={handleUserUpdated}
+        initialValues={userToFormValues(user)}
+        title="Editar Usuario"
+        submitLabel="Guardar Cambios"
+      />
     </>
   );
 }

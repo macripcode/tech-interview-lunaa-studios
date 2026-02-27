@@ -70,6 +70,11 @@ Revisa el código existente y encuentra errores sutiles que afectan la funcional
 | types      | user.ts                    | `CreateUserInput` extiende el `Pick` con `username?`, `phone?`, `website?`, `address?` para soportar el modo avanzado |
 | lib        | userService.ts             | `buildLocalUser` usa `input.username` si fue ingresado; de lo contrario lo deriva del nombre |
 | components | CreateUserModal.tsx        | Campos en modo avanzado aparecen vacíos siguiendo el orden de la interfaz: username → address (street/suite, city/cp) → phone → website → company (catchPhrase, bs) |
+| contexts   | UsersContext.tsx           | `updateUser(id, input)` reemplaza el user en el array preservando el `id` original; expuesto en el contexto |
+| hooks      | useUserForm.ts             | Exporta `UserFormValues` (tipo del estado del form) y `userToFormValues(user)` (convierte `User` a valores de formulario); acepta `initialValues?` — cuando `isOpen` se activa con valores, los carga y fuerza `isAdvanced = true` via `useRef` para evitar re-renders |
+| components | CreateUserModal.tsx        | Props genéricas: `onSubmit` reemplaza `onUserCreated`; `initialValues?`, `title?` y `submitLabel?` con defaults para modo creación |
+| app        | UserDashboard.tsx          | Prop actualizada a `onSubmit` |
+| components | UserProfile.tsx            | Convertido a Client Component; agrega botón ✏️ con div contenedor para dos acciones; abre `CreateUserModal` en modo edición con `initialValues=userToFormValues(user)`, `title="Editar Usuario"` y `submitLabel="Guardar Cambios"` |
 
 
 

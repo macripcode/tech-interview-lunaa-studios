@@ -67,7 +67,7 @@ export default function UserDashboard() {
       <CreateUserModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        onUserCreated={handleUserCreated}
+        onSubmit={handleUserCreated}
       />
     </div>
   );

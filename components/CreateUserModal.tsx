@@ -2,21 +2,31 @@
 
 import { useCallback, memo } from "react";
 import { type CreateUserInput } from "@/types/user";
-import { useUserForm } from "@/hooks/useUserForm";
+import { useUserForm, type UserFormValues } from "@/hooks/useUserForm";
 import { useToast } from "@/components/ToastProvider";
 
 interface CreateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUserCreated: (input: CreateUserInput) => void;
+  onSubmit: (input: CreateUserInput) => void;
+  initialValues?: UserFormValues;
+  title?: string;
+  submitLabel?: string;
 }
 
 const inputClass =
   "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500";
 
-function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProps) {
+function CreateUserModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialValues,
+  title = "Nuevo Usuario",
+  submitLabel = "Crear Usuario",
+}: CreateUserModalProps) {
   const { form, errors, isFormValid, isAdvanced, validate, activateAdvanced, handleChange } =
-    useUserForm(isOpen);
+    useUserForm(isOpen, initialValues);
   const { showToast } = useToast();
 
   const handleSubmit = useCallback(
@@ -26,10 +36,10 @@ function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProp
         showToast("Por favor, completa todos los campos correctamente.", "error");
         return;
       }
-      onUserCreated(form);
+      onSubmit(form);
       onClose();
     },
-    [form, validate, onUserCreated, onClose, showToast]
+    [form, validate, onSubmit, onClose, showToast]
   );
 
   if (!isOpen) return null;
@@ -40,7 +50,7 @@ function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProp
       <div className="relative mx-4 w-full max-w-md rounded-xl bg-white shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Nuevo Usuario</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
           <button
             onClick={onClose}
             className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
@@ -249,7 +259,7 @@ function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProp
               disabled={!isFormValid}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Crear Usuario
+              {submitLabel}
             </button>
           </div>
         </form>
