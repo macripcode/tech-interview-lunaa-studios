@@ -65,6 +65,11 @@ Revisa el código existente y encuentra errores sutiles que afectan la funcional
 | contexts   | UsersContext.tsx           | Agrega `getUserById(id)` que busca en el array en memoria; expone la operación de lectura por ID |
 | app        | page.tsx                   | Eliminado el fetch y el provider; solo renderiza `UserDashboard` (datos vienen del layout) |
 | app        | users/[id]/page.tsx        | Convertido a Client Component; usa `useParams()` y `getUserById()` del contexto — sin fetch a la API, usuarios locales también accesibles |
+| components | CreateUserModal.tsx        | Botón "Advanced" habilitado solo cuando `isFormValid`; al pulsarlo expande el formulario con campos adicionales vacíos |
+| hooks      | useUserForm.ts             | `EMPTY_FORM` reordenado siguiendo la interfaz `User` (name, username, email, address, phone, website, company); `activateAdvanced` simplificado a `setIsAdvanced(true)` sin mock data |
+| types      | user.ts                    | `CreateUserInput` extiende el `Pick` con `username?`, `phone?`, `website?`, `address?` para soportar el modo avanzado |
+| lib        | userService.ts             | `buildLocalUser` usa `input.username` si fue ingresado; de lo contrario lo deriva del nombre |
+| components | CreateUserModal.tsx        | Campos en modo avanzado aparecen vacíos siguiendo el orden de la interfaz: username → address (street/suite, city/cp) → phone → website → company (catchPhrase, bs) |
 
 
 

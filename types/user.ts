@@ -22,4 +22,9 @@ export interface User {
   };
 }
 
-export type CreateUserInput = Pick<User, "name" | "email" | "company">;
+export type CreateUserInput = Pick<User, "name" | "email" | "company"> & {
+  username?: string;
+  phone?: string;
+  website?: string;
+  address?: Omit<User["address"], "geo">;
+};

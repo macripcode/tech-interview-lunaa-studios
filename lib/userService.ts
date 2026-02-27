@@ -15,17 +15,13 @@ export function buildLocalUser(input: CreateUserInput): User {
   return {
     id: Date.now(),
     name: input.name,
-    username: input.name.toLowerCase().replace(/\s+/g, ""),
+    username: input.username || input.name.toLowerCase().replace(/\s+/g, ""),
     email: input.email,
-    address: {
-      street: "",
-      suite: "",
-      city: "",
-      zipcode: "",
-      geo: { lat: "0", lng: "0" },
-    },
-    phone: "",
-    website: "",
+    address: input.address
+      ? { ...input.address, geo: { lat: "0", lng: "0" } }
+      : { street: "", suite: "", city: "", zipcode: "", geo: { lat: "0", lng: "0" } },
+    phone: input.phone ?? "",
+    website: input.website ?? "",
     company: input.company,
   };
 }
