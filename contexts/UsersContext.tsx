@@ -14,6 +14,7 @@ interface UsersContextType {
   users: User[];
   addUser: (input: CreateUserInput) => void;
   updateUser: (id: number, input: CreateUserInput) => void;
+  deleteUser: (id: number) => void;
   getUserById: (id: number) => User | undefined;
 }
 
@@ -45,13 +46,17 @@ export function UsersProvider({ initialUsers, children }: UsersProviderProps) {
     );
   }, []);
 
+  const deleteUser = useCallback((id: number) => {
+    setUsers((prev) => prev.filter((u) => u.id !== id));
+  }, []);
+
   const getUserById = useCallback(
     (id: number) => users.find((u) => u.id === id),
     [users]
   );
 
   return (
-    <UsersContext.Provider value={{ users, addUser, updateUser, getUserById }}>
+    <UsersContext.Provider value={{ users, addUser, updateUser, deleteUser, getUserById }}>
       {children}
     </UsersContext.Provider>
   );
