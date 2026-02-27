@@ -17,7 +17,7 @@ export function useModalFocus(
   isOpen: boolean,
   onClose: () => void,
   initialFocusRef: { current: HTMLElement | null }
-): RefObject<HTMLDivElement> {
+): RefObject<HTMLDivElement | null> {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
