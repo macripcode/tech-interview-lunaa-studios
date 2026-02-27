@@ -66,7 +66,7 @@ export default function UserProfile({ user }: UserProfileProps) {
           <button
             onClick={handleOpenEdit}
             aria-label="Editar usuario"
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+            className="rounded-lg border border-blue-200 p-2 text-blue-500 hover:bg-blue-50 hover:text-blue-700"
           >
             <svg
               className="h-5 w-5"
